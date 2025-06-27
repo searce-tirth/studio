@@ -72,6 +72,18 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  .theme-zinc { --primary: 240 5.9% 10%; --primary-foreground: 0 0% 98%; --ring: 240 5.9% 10%;}
+  .dark .theme-zinc { --primary: 0 0% 98%; --primary-foreground: 240 5.9% 10%; --ring: 0 0% 98%;}
+  
+  .theme-rose { --primary: 346.8 77.2% 49.8%; --primary-foreground: 355.7 100% 97.3%; --ring: 346.8 77.2% 49.8%;}
+  .dark .theme-rose { --primary: 346.8 77.2% 49.8%; --primary-foreground: 355.7 100% 97.3%; --ring: 346.8 77.2% 49.8%;}
+
+  .theme-green { --primary: 142.1 76.2% 36.3%; --primary-foreground: 144.9 80.4% 97.3%; --ring: 142.1 76.2% 36.3%;}
+  .dark .theme-green { --primary: 142.1 76.2% 36.3%; --primary-foreground: 144.9 80.4% 97.3%; --ring: 142.1 76.2% 36.3%;}
+
+  .theme-blue { --primary: 221.2 83.2% 53.3%; --primary-foreground: 210 40% 98%; --ring: 221.2 83.2% 53.3%;}
+  .dark .theme-blue { --primary: 221.2 83.2% 53.3%; --primary-foreground: 210 40% 98%; --ring: 221.2 83.2% 53.3%;}
 }
 
 @layer base {
@@ -80,5 +92,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
   }
 }

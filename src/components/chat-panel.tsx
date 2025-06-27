@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import ChatMessage from "./chat-message";
 import { Skeleton } from "./ui/skeleton";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import { ThemeToggle } from "./theme-toggle";
+import { ThemeCustomizer } from "./theme-customizer";
 
 type Message = {
   role: "user" | "assistant";
@@ -106,7 +106,7 @@ export default function ChatPanel() {
               <SelectItem value="custom-model">Custom Model</SelectItem>
             </SelectContent>
           </Select>
-          <ThemeToggle />
+          <ThemeCustomizer />
         </div>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden p-0">

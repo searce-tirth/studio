@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ColorThemeProvider } from '@/components/color-theme-provider';
 
 export const metadata: Metadata = {
   title: 'ContextualChat',
@@ -25,10 +26,12 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange
+          disableTransitionOnChange={false}
         >
-          {children}
-          <Toaster />
+          <ColorThemeProvider>
+            {children}
+            <Toaster />
+          </ColorThemeProvider>
         </ThemeProvider>
       </body>
     </html>
