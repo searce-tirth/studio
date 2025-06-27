@@ -3,6 +3,20 @@
 @tailwind utilities;
 
 @layer base {
+  @keyframes gradient-bg {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
+
+@layer base {
   :root {
     --background: 228 12% 95%;
     --foreground: 240 10% 3.9%;
@@ -91,9 +105,19 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 300ms;
+
+    background: linear-gradient(
+      -45deg,
+      hsl(var(--background)),
+      hsl(var(--secondary)),
+      hsl(var(--accent)),
+      hsl(var(--primary))
+    );
+    background-size: 400% 400%;
+    animation: gradient-bg 25s ease infinite;
   }
 }
