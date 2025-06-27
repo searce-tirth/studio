@@ -23,7 +23,7 @@ const InteractiveBackground: React.FC<InteractiveBackgroundProps> = ({ className
 
     let animationFrameId: number;
     let particles: Particle[] = [];
-    const mouse = { x: -200, y: -200 };
+    const mouse = { x: -200, y: -200, radius: 150 };
 
     const resizeCanvas = () => {
       canvas.width = canvas.offsetWidth;
@@ -50,17 +50,23 @@ const InteractiveBackground: React.FC<InteractiveBackgroundProps> = ({ className
       x: number;
       y: number;
       size: number;
+      baseSize: number;
       speedX: number;
       speedY: number;
       color: string;
+      pulseAngle: number;
+      pulseSpeed: number;
 
       constructor(x: number, y: number, size: number, speedX: number, speedY: number, color: string) {
         this.x = x;
         this.y = y;
+        this.baseSize = size;
         this.size = size;
         this.speedX = speedX;
         this.speedY = speedY;
         this.color = color;
+        this.pulseAngle = Math.random() * Math.PI * 2;
+        this.pulseSpeed = Math.random() * 0.02 + 0.01;
       }
 
       draw() {
@@ -72,55 +78,60 @@ const InteractiveBackground: React.FC<InteractiveBackgroundProps> = ({ className
       }
 
       update() {
-        if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
-        if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+        if (this.x + this.size > canvas.width || this.x - this.size < 0) this.speedX = -this.speedX;
+        if (this.y + this.size > canvas.height || this.y - this.size < 0) this.speedY = -this.speedY;
 
         this.x += this.speedX;
         this.y += this.speedY;
+        
+        this.pulseAngle += this.pulseSpeed;
+        this.size = this.baseSize + Math.sin(this.pulseAngle) * (this.baseSize / 4);
 
-        // Mouse interaction
         const dx = this.x - mouse.x;
         const dy = this.y - mouse.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 100) {
+        if (distance < mouse.radius) {
           const forceDirectionX = dx / distance;
           const forceDirectionY = dy / distance;
-          const force = (100 - distance) / 100;
-          this.x += forceDirectionX * force * 2;
-          this.y += forceDirectionY * force * 2;
+          const force = (mouse.radius - distance) / mouse.radius;
+          const pushStrength = 5;
+          this.x += forceDirectionX * force * pushStrength;
+          this.y += forceDirectionY * force * pushStrength;
         }
       }
     }
 
     const initParticles = () => {
       particles = [];
-      const numberOfParticles = (canvas.width * canvas.height) / 9000;
+      const numberOfParticles = (canvas.width * canvas.height) / 10000;
       const primaryColorHsl = getComputedStyle(canvas).getPropertyValue('--primary').trim();
-      const particleColor = `hsl(${primaryColorHsl} / 0.7)`;
-
+      const accentColorHsl = getComputedStyle(canvas).getPropertyValue('--accent').trim();
+      
       for (let i = 0; i < numberOfParticles; i++) {
-        const size = Math.random() * 2 + 1;
+        const size = Math.random() * 2.5 + 1;
         const x = Math.random() * (canvas.width - size * 2) + size;
         const y = Math.random() * (canvas.height - size * 2) + size;
-        const speedX = Math.random() * 0.4 - 0.2;
-        const speedY = Math.random() * 0.4 - 0.2;
+        const speedX = Math.random() * 0.5 - 0.25;
+        const speedY = Math.random() * 0.5 - 0.25;
+        const particleColor = Math.random() < 0.1 ? `hsl(${accentColorHsl} / 0.9)` : `hsl(${primaryColorHsl} / 0.7)`;
         particles.push(new Particle(x, y, size, speedX, speedY, particleColor));
       }
     };
     
     const connectParticles = () => {
         const primaryColorHsl = getComputedStyle(canvas).getPropertyValue('--primary').trim();
+        const connectionRadius = 140;
         for (let a = 0; a < particles.length; a++) {
             for (let b = a; b < particles.length; b++) {
                 const dx = particles[a].x - particles[b].x;
                 const dy = particles[a].y - particles[b].y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < 120) {
+                if (distance < connectionRadius) {
                     if (!ctx) return;
-                    const opacity = 1 - distance / 120;
-                    ctx.strokeStyle = `hsl(${primaryColorHsl} / ${opacity * 0.5})`;
-                    ctx.lineWidth = 1;
+                    const opacity = 1 - distance / connectionRadius;
+                    ctx.strokeStyle = `hsl(${primaryColorHsl} / ${opacity * 0.6})`;
+                    ctx.lineWidth = 1.5;
                     ctx.beginPath();
                     ctx.moveTo(particles[a].x, particles[a].y);
                     ctx.lineTo(particles[b].x, particles[b].y);
@@ -141,8 +152,10 @@ const InteractiveBackground: React.FC<InteractiveBackgroundProps> = ({ className
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    resizeCanvas();
-    animate();
+    setTimeout(() => {
+        resizeCanvas();
+        animate();
+    }, 100);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
