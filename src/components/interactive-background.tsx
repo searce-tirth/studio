@@ -113,7 +113,7 @@ const InteractiveBackground: React.FC<InteractiveBackgroundProps> = ({ className
         const y = Math.random() * (canvas.height - size * 2) + size;
         const speedX = Math.random() * 0.5 - 0.25;
         const speedY = Math.random() * 0.5 - 0.25;
-        const particleColor = Math.random() < 0.1 ? `hsl(${accentColorHsl} / 0.9)` : `hsl(${primaryColorHsl} / 0.7)`;
+        const particleColor = Math.random() < 0.15 ? `hsl(${accentColorHsl})` : `hsl(${primaryColorHsl} / 0.85)`;
         particles.push(new Particle(x, y, size, speedX, speedY, particleColor));
       }
     };
@@ -130,7 +130,7 @@ const InteractiveBackground: React.FC<InteractiveBackgroundProps> = ({ className
                 if (distance < connectionRadius) {
                     if (!ctx) return;
                     const opacity = 1 - distance / connectionRadius;
-                    ctx.strokeStyle = `hsl(${primaryColorHsl} / ${opacity * 0.6})`;
+                    ctx.strokeStyle = `hsl(${primaryColorHsl} / ${opacity * 0.8})`;
                     ctx.lineWidth = 1.5;
                     ctx.beginPath();
                     ctx.moveTo(particles[a].x, particles[a].y);
