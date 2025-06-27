@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import ChatMessage from "./chat-message";
 import { Skeleton } from "./ui/skeleton";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { ThemeToggle } from "./theme-toggle";
 
 type Message = {
   role: "user" | "assistant";
@@ -94,16 +95,19 @@ export default function ChatPanel() {
             <Bot className="w-8 h-8 text-primary" />
             <CardTitle className="font-headline text-2xl">ContextualChat</CardTitle>
         </div>
-        <Select value={model} onValueChange={handleModelChange} disabled={isLoading}>
-          <SelectTrigger className="w-[200px] font-sans">
-            <SelectValue placeholder="Select model" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="gemini-2.0-flash">Gemini 2.0 Flash</SelectItem>
-            <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
-            <SelectItem value="custom-model">Custom Model</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Select value={model} onValueChange={handleModelChange} disabled={isLoading}>
+            <SelectTrigger className="w-[200px] font-sans">
+              <SelectValue placeholder="Select model" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="gemini-2.0-flash">Gemini 2.0 Flash</SelectItem>
+              <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
+              <SelectItem value="custom-model">Custom Model</SelectItem>
+            </SelectContent>
+          </Select>
+          <ThemeToggle />
+        </div>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden p-0">
         <ScrollArea className="h-full">
