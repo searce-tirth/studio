@@ -11,7 +11,7 @@ import { ragChat, RagChatInput } from "@/ai/flows/rag-chat";
 import { selectModel } from "@/ai/flows/select-model";
 import { useToast } from "@/hooks/use-toast";
 import ChatMessage from "./chat-message";
-import { Skeleton } from "./ui/skeleton";
+import TypingIndicator from "./typing-indicator";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { ThemeCustomizer } from "./theme-customizer";
 
@@ -123,18 +123,14 @@ export default function ChatPanel() {
                 <ChatMessage key={index} role={message.role} content={message.content} />
             ))}
             {isLoading && (
-                <div className="flex items-start gap-4 animate-pulse">
-                    <Avatar className="h-8 w-8 border">
-                        <AvatarFallback className="bg-background"><Bot className="h-5 w-5 text-primary" /></AvatarFallback>
-                    </Avatar>
-                    <div className="max-w-[75%] rounded-lg p-3 bg-card w-full">
-                        <div className="space-y-2">
-                            <Skeleton className="h-4 w-5/6" />
-                            <Skeleton className="h-4 w-full" />
-                            <Skeleton className="h-4 w-4/6" />
-                        </div>
-                    </div>
+              <div className="flex items-start gap-4">
+                <Avatar className="h-8 w-8 border">
+                    <AvatarFallback className="bg-background"><Bot className="h-5 w-5 text-primary" /></AvatarFallback>
+                </Avatar>
+                <div className="max-w-[75%] rounded-lg p-3 bg-card shadow-sm flex items-center h-10">
+                    <TypingIndicator />
                 </div>
+              </div>
             )}
             <div ref={messagesEndRef} />
             </div>

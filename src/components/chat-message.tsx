@@ -15,8 +15,8 @@ export default function ChatMessage({ role, content }: ChatMessageProps) {
 
   return (
     <div className={cn(
-      "flex items-start gap-4 animate-in fade-in",
-      isUser ? "justify-end" : "justify-start"
+      "flex items-start gap-4 animate-in fade-in duration-300",
+      isUser ? "justify-end slide-in-from-right-4" : "justify-start slide-in-from-left-4"
     )}>
       {!isUser && (
         <Avatar className="h-8 w-8 border">
