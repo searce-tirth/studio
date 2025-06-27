@@ -89,7 +89,7 @@ export default function ChatPanel() {
   };
 
   return (
-    <Card className="flex flex-col w-full h-full shadow-2xl rounded-xl border-2">
+    <Card className="flex flex-col w-full h-full shadow-2xl rounded-xl border-2 bg-card/50 backdrop-blur-sm">
       <CardHeader className="flex flex-row items-center justify-between border-b">
         <div className="flex items-center gap-2">
             <Bot className="w-8 h-8 text-primary" />
