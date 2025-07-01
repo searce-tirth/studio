@@ -3,8 +3,6 @@
  * @fileOverview A flow for converting text to speech.
  *
  * - textToSpeech - A function that converts text to an audio data URI.
- * - TextToSpeechInput - The input type for the textToSpeech function.
- * - TextToSpeechOutput - The return type for the textToSpeech function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -13,14 +11,14 @@ import {z} from 'genkit';
 import wav from 'wav';
 
 const TextToSpeechInputSchema = z.string();
-export type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
+type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
 
 const TextToSpeechOutputSchema = z.object({
   audioDataUri: z
     .string()
     .describe('The generated audio as a base64 data URI.'),
 });
-export type TextToSpeechOutput = z.infer<typeof TextToSpeechOutputSchema>;
+type TextToSpeechOutput = z.infer<typeof TextToSpeechOutputSchema>;
 
 export async function textToSpeech(
   input: TextToSpeechInput
@@ -63,7 +61,7 @@ const textToSpeechFlow = ai.defineFlow(
   },
   async (query) => {
     const {media} = await ai.generate({
-      model: googleAI.model('gemini-2.5-flash-preview-tts'),
+      model: 'googleai/gemini-2.5-flash-preview-tts',
       config: {
         responseModalities: ['AUDIO'],
         speechConfig: {
