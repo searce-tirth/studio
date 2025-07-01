@@ -157,12 +157,12 @@ export default function ChatPanel() {
                 <SelectContent>
                   <SelectItem value="Algenib">Algenib (Female)</SelectItem>
                   <SelectItem value="Achernar">Achernar (Male)</SelectItem>
-                  <SelectItem value="Enif">Enif (Female)</SelectItem>
-                  <SelectItem value="Hadar">Hadar (Male)</SelectItem>
-                  <SelectItem value="Adhil">Adhil (Female)</SelectItem>
-                  <SelectItem value="Markab">Markab (Male)</SelectItem>
-                  <SelectItem value="Rasalas">Rasalas (Male)</SelectItem>
                   <SelectItem value="Gacrux">Gacrux (Female)</SelectItem>
+                  <SelectItem value="Rasalgethi">Rasalgethi (Male)</SelectItem>
+                  <SelectItem value="Schedar">Schedar (Female)</SelectItem>
+                  <SelectItem value="Umbriel">Umbriel (Female)</SelectItem>
+                  <SelectItem value="Zubenelgenubi">Zubenelgenubi (Male)</SelectItem>
+                  <SelectItem value="Puck">Puck (Male)</SelectItem>
                 </SelectContent>
               </Select>
             )}
