@@ -69,27 +69,29 @@ export default function ChatPanel() {
       setMessages((prev) => [...prev, assistantMessage]);
 
       if (isTtsEnabled && result.response) {
-        try {
-          const { audioDataUri } = await textToSpeech(result.response);
-          if (audioRef.current) {
-            audioRef.current.src = audioDataUri;
-            audioRef.current.play().catch(err => {
-              console.error("Audio playback failed:", err);
-              toast({
-                variant: "destructive",
-                title: "Playback Error",
-                description: "Could not play audio. Check browser permissions.",
+        // Generate and play audio in the background without blocking
+        textToSpeech(result.response)
+          .then(({ audioDataUri }) => {
+            if (audioRef.current) {
+              audioRef.current.src = audioDataUri;
+              audioRef.current.play().catch(err => {
+                console.error("Audio playback failed:", err);
+                toast({
+                  variant: "destructive",
+                  title: "Playback Error",
+                  description: "Could not play audio. Check browser permissions.",
+                });
               });
+            }
+          })
+          .catch(ttsError => {
+            console.error("Error generating speech:", ttsError);
+            toast({
+              variant: "destructive",
+              title: "TTS Error",
+              description: "Failed to generate audio for the response.",
             });
-          }
-        } catch (ttsError) {
-          console.error("Error generating speech:", ttsError);
-          toast({
-            variant: "destructive",
-            title: "TTS Error",
-            description: "Failed to generate audio for the response.",
           });
-        }
       }
 
     } catch (error) {
@@ -111,7 +113,7 @@ export default function ChatPanel() {
 
   return (
     <Card className="relative flex flex-col w-full h-full shadow-2xl rounded-xl border-2 overflow-hidden">
-      <InteractiveBackground className="absolute inset-0 z-0 opacity-50" />
+      <InteractiveBackground className="absolute inset-0 z-0 opacity-100" />
       <div className="relative z-10 flex flex-col h-full w-full bg-card/50 backdrop-blur-sm rounded-xl">
         <CardHeader className="flex flex-row items-center justify-between border-b bg-transparent">
           <div className="flex items-center gap-2">
@@ -129,6 +131,7 @@ export default function ChatPanel() {
                 <SelectItem value="gemini-pro">Gemini 1.0 Pro</SelectItem>
                 <SelectItem value="gemini-pro-vision">Gemini 1.0 Pro Vision</SelectItem>
                 <SelectItem value="aqa">AQA</SelectItem>
+                <SelectItem value="gemini-1.0-pro">gemini-1.0-pro</SelectItem>
                 <SelectItem value="gemini-1.0-pro-001">gemini-1.0-pro-001</SelectItem>
                 <SelectItem value="gemini-1.0-pro-002">gemini-1.0-pro-002</SelectItem>
                 <SelectItem value="gemini-1.0-pro-vision-001">gemini-1.0-pro-vision-001</SelectItem>
