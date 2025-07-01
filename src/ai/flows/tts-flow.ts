@@ -11,18 +11,16 @@ import {z} from 'genkit';
 import wav from 'wav';
 
 const TextToSpeechInputSchema = z.string();
-type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
 
 const TextToSpeechOutputSchema = z.object({
   audioDataUri: z
     .string()
     .describe('The generated audio as a base64 data URI.'),
 });
-type TextToSpeechOutput = z.infer<typeof TextToSpeechOutputSchema>;
 
 export async function textToSpeech(
-  input: TextToSpeechInput
-): Promise<TextToSpeechOutput> {
+  input: string
+): Promise<{ audioDataUri: string }> {
   return textToSpeechFlow(input);
 }
 
@@ -61,10 +59,11 @@ const textToSpeechFlow = ai.defineFlow(
   },
   async (query) => {
     const {media} = await ai.generate({
-      model: 'googleai/gemini-2.5-flash-preview-tts',
+      model: googleAI.model('gemini-2.5-flash-preview-tts'),
       config: {
         responseModalities: ['AUDIO'],
         speechConfig: {
+          speakingRate: 1.2,
           voiceConfig: {
             prebuiltVoiceConfig: {voiceName: 'Algenib'},
           },
