@@ -107,6 +107,7 @@ const ragChatFlow = ai.defineFlow(
           voiceConfig: {
             prebuiltVoiceConfig: {voiceName: input.voice || 'Algenib'},
           },
+          speakingRate: 1.25,
         },
       },
       prompt: responseText,
