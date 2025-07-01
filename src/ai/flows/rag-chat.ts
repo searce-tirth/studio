@@ -17,6 +17,7 @@ const RagChatInputSchema = z.object({
     .array(z.object({role: z.enum(['user', 'assistant']), content: z.string()}))
     .optional()
     .describe('The chat history.'),
+  model: z.string().optional().describe('The model to use for the chat.'),
 });
 export type RagChatInput = z.infer<typeof RagChatInputSchema>;
 
@@ -52,7 +53,7 @@ const ragChatFlow = ai.defineFlow(
     outputSchema: RagChatOutputSchema,
   },
   async input => {
-    const {output} = await ragChatPrompt(input);
+    const {output} = await ragChatPrompt(input, { model: input.model ? `googleai/${input.model}` : undefined });
     return output!;
   }
 );

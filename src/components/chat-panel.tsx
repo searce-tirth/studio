@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Bot, Send, Loader2 } from "lucide-react";
 import { ragChat, RagChatInput } from "@/ai/flows/rag-chat";
-import { selectModel } from "@/ai/flows/select-model";
 import { useToast } from "@/hooks/use-toast";
 import ChatMessage from "./chat-message";
 import TypingIndicator from "./typing-indicator";
@@ -25,7 +24,7 @@ export default function ChatPanel() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [model, setModel] = useState("gemini-2.0-flash");
+  const [model, setModel] = useState("gemini-1.5-flash-latest");
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -33,22 +32,12 @@ export default function ChatPanel() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
-  const handleModelChange = async (newModel: string) => {
+  const handleModelChange = (newModel: string) => {
     setModel(newModel);
-    try {
-      await selectModel({ modelName: newModel });
-      toast({
-        title: "Model Changed",
-        description: `Switched to ${newModel}.`,
-      });
-    } catch (error) {
-       console.error("Error selecting model:", error);
-       toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to switch model.",
-      });
-    }
+    toast({
+      title: "Model Changed",
+      description: `Switched to ${newModel}.`,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -65,6 +54,7 @@ export default function ChatPanel() {
       const chatInput: RagChatInput = {
         message: currentInput,
         history: messages.map(m => ({ role: m.role, content: m.content })),
+        model: model,
       };
       const result = await ragChat(chatInput);
       const assistantMessage: Message = {
@@ -104,9 +94,9 @@ export default function ChatPanel() {
                 <SelectValue placeholder="Select model" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="gemini-1.5-flash-latest">Gemini 1.5 Flash</SelectItem>
                 <SelectItem value="gemini-2.0-flash">Gemini 2.0 Flash</SelectItem>
                 <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
-                <SelectItem value="custom-model">Custom Model</SelectItem>
               </SelectContent>
             </Select>
             <ThemeCustomizer />
