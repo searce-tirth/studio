@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -26,7 +26,7 @@ export default function ChatPanel() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [model, setModel] = useState("gemini-1.5-flash-latest");
+  const [model, setModel] = useState("gemini-2.5-flash-lite-preview-06-17");
   const [isTtsEnabled, setIsTtsEnabled] = useState(false);
   const [voice, setVoice] = useState("Algenib");
   const { toast } = useToast();
@@ -114,21 +114,28 @@ export default function ChatPanel() {
           </div>
           <div className="flex items-center gap-4">
             <Select value={model} onValueChange={handleModelChange} disabled={isLoading}>
-              <SelectTrigger className="w-[200px] font-sans">
+              <SelectTrigger className="w-[250px] font-sans">
                 <SelectValue placeholder="Select model" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="gemini-1.5-pro-latest">Gemini 1.5 Pro</SelectItem>
-                <SelectItem value="gemini-1.5-flash-latest">Gemini 1.5 Flash</SelectItem>
-                <SelectItem value="gemini-pro">Gemini 1.0 Pro</SelectItem>
-                <SelectItem value="gemini-pro-vision">Gemini 1.0 Pro Vision</SelectItem>
-                <SelectItem value="aqa">AQA</SelectItem>
-                <SelectItem value="gemini-1.0-pro">gemini-1.0-pro</SelectItem>
-                <SelectItem value="gemini-1.0-pro-001">gemini-1.0-pro-001</SelectItem>
-                <SelectItem value="gemini-1.0-pro-002">gemini-1.0-pro-002</SelectItem>
-                <SelectItem value="gemini-1.0-pro-vision-001">gemini-1.0-pro-vision-001</SelectItem>
-                <SelectItem value="gemini-1.5-flash-001">gemini-1.5-flash-001</SelectItem>
-                <SelectItem value="gemini-1.5-pro-001">gemini-1.5-pro-001</SelectItem>
+                <SelectGroup>
+                  <SelectLabel>Preview</SelectLabel>
+                  <SelectItem value="gemini-2.5-flash-lite-preview-06-17">Gemini 2.5 Flash Lite Preview</SelectItem>
+                </SelectGroup>
+                <SelectGroup>
+                  <SelectLabel>Latest</SelectLabel>
+                  <SelectItem value="gemini-1.5-pro-latest">Gemini 1.5 Pro</SelectItem>
+                  <SelectItem value="gemini-1.5-flash-latest">Gemini 1.5 Flash</SelectItem>
+                </SelectGroup>
+                <SelectGroup>
+                  <SelectLabel>Stable</SelectLabel>
+                  <SelectItem value="gemini-1.0-pro">Gemini 1.0 Pro</SelectItem>
+                  <SelectItem value="gemini-pro-vision">Gemini Pro Vision</SelectItem>
+                </SelectGroup>
+                 <SelectGroup>
+                  <SelectLabel>Other</SelectLabel>
+                  <SelectItem value="aqa">AQA</SelectItem>
+                </SelectGroup>
               </SelectContent>
             </Select>
             <div className="flex items-center space-x-2">
