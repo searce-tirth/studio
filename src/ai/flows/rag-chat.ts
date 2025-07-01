@@ -23,6 +23,7 @@ const RagChatInputSchema = z.object({
     .boolean()
     .optional()
     .describe('Whether to generate text-to-speech audio.'),
+  voice: z.string().optional().describe('The voice to use for text-to-speech.'),
 });
 export type RagChatInput = z.infer<typeof RagChatInputSchema>;
 
@@ -104,7 +105,7 @@ const ragChatFlow = ai.defineFlow(
         responseModalities: ['AUDIO'],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: {voiceName: 'Algenib'},
+            prebuiltVoiceConfig: {voiceName: input.voice || 'Algenib'},
           },
         },
       },

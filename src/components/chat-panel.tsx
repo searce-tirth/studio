@@ -28,6 +28,7 @@ export default function ChatPanel() {
   const [isLoading, setIsLoading] = useState(false);
   const [model, setModel] = useState("gemini-1.5-flash-latest");
   const [isTtsEnabled, setIsTtsEnabled] = useState(false);
+  const [voice, setVoice] = useState("Algenib");
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -60,6 +61,7 @@ export default function ChatPanel() {
         history: messages.map(m => ({ role: m.role, content: m.content })),
         model: model,
         isTtsEnabled: isTtsEnabled,
+        voice: voice,
       };
       
       const result = await ragChat(chatInput);
@@ -140,6 +142,23 @@ export default function ChatPanel() {
                 TTS
               </Label>
             </div>
+            {isTtsEnabled && (
+              <Select value={voice} onValueChange={setVoice} disabled={isLoading}>
+                <SelectTrigger className="w-[160px] font-sans">
+                  <SelectValue placeholder="Select voice" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Algenib">Algenib (Female)</SelectItem>
+                  <SelectItem value="Achernar">Achernar (Male)</SelectItem>
+                  <SelectItem value="Enif">Enif (Female)</SelectItem>
+                  <SelectItem value="Hadar">Hadar (Male)</SelectItem>
+                  <SelectItem value="Adhil">Adhil (Female)</SelectItem>
+                  <SelectItem value="Markab">Markab (Male)</SelectItem>
+                  <SelectItem value="Rasalas">Rasalas (Male)</SelectItem>
+                  <SelectItem value="Gacrux">Gacrux (Female)</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
             <ThemeCustomizer />
           </div>
         </CardHeader>
