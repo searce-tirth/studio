@@ -10,7 +10,6 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Bot, Send, Loader2 } from "lucide-react";
 import { ragChat, RagChatInput } from "@/ai/flows/rag-chat";
-import { textToSpeech } from "@/ai/flows/tts-flow";
 import { useToast } from "@/hooks/use-toast";
 import ChatMessage from "./chat-message";
 import TypingIndicator from "./typing-indicator";
@@ -60,38 +59,29 @@ export default function ChatPanel() {
         message: currentInput,
         history: messages.map(m => ({ role: m.role, content: m.content })),
         model: model,
+        isTtsEnabled: isTtsEnabled,
       };
+      
       const result = await ragChat(chatInput);
+
       const assistantMessage: Message = {
         role: "assistant",
         content: result.response,
       };
       setMessages((prev) => [...prev, assistantMessage]);
 
-      if (isTtsEnabled && result.response) {
-        // Generate and play audio in the background without blocking
-        textToSpeech(result.response)
-          .then(({ audioDataUri }) => {
-            if (audioRef.current) {
-              audioRef.current.src = audioDataUri;
-              audioRef.current.play().catch(err => {
-                console.error("Audio playback failed:", err);
-                toast({
-                  variant: "destructive",
-                  title: "Playback Error",
-                  description: "Could not play audio. Check browser permissions.",
-                });
-              });
-            }
-          })
-          .catch(ttsError => {
-            console.error("Error generating speech:", ttsError);
+      if (result.audioDataUri) {
+        if (audioRef.current) {
+          audioRef.current.src = result.audioDataUri;
+          audioRef.current.play().catch(err => {
+            console.error("Audio playback failed:", err);
             toast({
               variant: "destructive",
-              title: "TTS Error",
-              description: "Failed to generate audio for the response.",
+              title: "Playback Error",
+              description: "Could not play audio. Check browser permissions.",
             });
           });
+        }
       }
 
     } catch (error) {
@@ -120,7 +110,7 @@ export default function ChatPanel() {
               <Bot className="w-8 h-8 text-primary" />
               <CardTitle className="font-headline text-2xl">ContextualChat</CardTitle>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Select value={model} onValueChange={handleModelChange} disabled={isLoading}>
               <SelectTrigger className="w-[200px] font-sans">
                 <SelectValue placeholder="Select model" />
