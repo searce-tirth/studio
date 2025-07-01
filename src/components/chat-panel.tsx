@@ -121,6 +121,7 @@ export default function ChatPanel() {
                 <SelectGroup>
                   <SelectLabel>Preview</SelectLabel>
                   <SelectItem value="gemini-2.5-flash-lite-preview-06-17">Gemini 2.5 Flash Lite Preview</SelectItem>
+                  <SelectItem value="gemini-2.0-flash-lite">Gemini 2.0 Flash-Lite</SelectItem>
                 </SelectGroup>
                 <SelectGroup>
                   <SelectLabel>Latest</SelectLabel>
