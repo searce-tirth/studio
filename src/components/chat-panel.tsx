@@ -6,8 +6,11 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { Bot, Send, Loader2 } from "lucide-react";
 import { ragChat, RagChatInput } from "@/ai/flows/rag-chat";
+import { textToSpeech } from "@/ai/flows/tts-flow";
 import { useToast } from "@/hooks/use-toast";
 import ChatMessage from "./chat-message";
 import TypingIndicator from "./typing-indicator";
@@ -25,8 +28,10 @@ export default function ChatPanel() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [model, setModel] = useState("gemini-1.5-flash-latest");
+  const [isTtsEnabled, setIsTtsEnabled] = useState(false);
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -62,6 +67,31 @@ export default function ChatPanel() {
         content: result.response,
       };
       setMessages((prev) => [...prev, assistantMessage]);
+
+      if (isTtsEnabled && result.response) {
+        try {
+          const { audioDataUri } = await textToSpeech(result.response);
+          if (audioRef.current) {
+            audioRef.current.src = audioDataUri;
+            audioRef.current.play().catch(err => {
+              console.error("Audio playback failed:", err);
+              toast({
+                variant: "destructive",
+                title: "Playback Error",
+                description: "Could not play audio. Check browser permissions.",
+              });
+            });
+          }
+        } catch (ttsError) {
+          console.error("Error generating speech:", ttsError);
+          toast({
+            variant: "destructive",
+            title: "TTS Error",
+            description: "Failed to generate audio for the response.",
+          });
+        }
+      }
+
     } catch (error) {
       console.error("Error calling ragChat:", error);
       const assistantMessage: Message = {
@@ -81,7 +111,7 @@ export default function ChatPanel() {
 
   return (
     <Card className="relative flex flex-col w-full h-full shadow-2xl rounded-xl border-2 overflow-hidden">
-      <InteractiveBackground className="absolute inset-0 z-0" />
+      <InteractiveBackground className="absolute inset-0 z-0 opacity-50" />
       <div className="relative z-10 flex flex-col h-full w-full bg-card/50 backdrop-blur-sm rounded-xl">
         <CardHeader className="flex flex-row items-center justify-between border-b bg-transparent">
           <div className="flex items-center gap-2">
@@ -94,18 +124,29 @@ export default function ChatPanel() {
                 <SelectValue placeholder="Select model" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="gemini-1.5-pro-latest">Gemini 1.5 Pro (Latest)</SelectItem>
-                <SelectItem value="gemini-1.5-pro-001">Gemini 1.5 Pro (001)</SelectItem>
-                <SelectItem value="gemini-1.5-flash-latest">Gemini 1.5 Flash (Latest)</SelectItem>
-                <SelectItem value="gemini-1.5-flash-001">Gemini 1.5 Flash (001)</SelectItem>
-                <SelectItem value="gemini-pro">Gemini Pro (Stable)</SelectItem>
-                <SelectItem value="gemini-pro-vision">Gemini Pro Vision (Stable)</SelectItem>
-                <SelectItem value="gemini-1.0-pro">Gemini 1.0 Pro</SelectItem>
-                <SelectItem value="gemini-1.0-pro-001">Gemini 1.0 Pro (001)</SelectItem>
-                <SelectItem value="gemini-1.0-pro-002">Gemini 1.0 Pro (002)</SelectItem>
-                <SelectItem value="gemini-1.0-pro-vision-001">Gemini 1.0 Pro Vision (001)</SelectItem>
+                <SelectItem value="gemini-1.5-pro-latest">Gemini 1.5 Pro</SelectItem>
+                <SelectItem value="gemini-1.5-flash-latest">Gemini 1.5 Flash</SelectItem>
+                <SelectItem value="gemini-pro">Gemini 1.0 Pro</SelectItem>
+                <SelectItem value="gemini-pro-vision">Gemini 1.0 Pro Vision</SelectItem>
+                <SelectItem value="aqa">AQA</SelectItem>
+                <SelectItem value="gemini-1.0-pro-001">gemini-1.0-pro-001</SelectItem>
+                <SelectItem value="gemini-1.0-pro-002">gemini-1.0-pro-002</SelectItem>
+                <SelectItem value="gemini-1.0-pro-vision-001">gemini-1.0-pro-vision-001</SelectItem>
+                <SelectItem value="gemini-1.5-flash-001">gemini-1.5-flash-001</SelectItem>
+                <SelectItem value="gemini-1.5-pro-001">gemini-1.5-pro-001</SelectItem>
               </SelectContent>
             </Select>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="tts-switch"
+                checked={isTtsEnabled}
+                onCheckedChange={setIsTtsEnabled}
+                disabled={isLoading}
+              />
+              <Label htmlFor="tts-switch" className="text-sm font-medium text-foreground">
+                TTS
+              </Label>
+            </div>
             <ThemeCustomizer />
           </div>
         </CardHeader>
@@ -159,6 +200,7 @@ export default function ChatPanel() {
           </form>
         </CardFooter>
       </div>
+      <audio ref={audioRef} className="hidden" />
     </Card>
   );
 }
