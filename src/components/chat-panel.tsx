@@ -94,9 +94,10 @@ export default function ChatPanel() {
                 <SelectValue placeholder="Select model" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="gemini-1.5-pro-latest">Gemini 1.5 Pro</SelectItem>
                 <SelectItem value="gemini-1.5-flash-latest">Gemini 1.5 Flash</SelectItem>
-                <SelectItem value="gemini-2.0-flash">Gemini 2.0 Flash</SelectItem>
                 <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
+                <SelectItem value="gemini-pro-vision">Gemini Pro Vision</SelectItem>
               </SelectContent>
             </Select>
             <ThemeCustomizer />
